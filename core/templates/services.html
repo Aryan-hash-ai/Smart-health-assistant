@@ -1,0 +1,104 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Our Services{% endblock %}
+
+{% block styles %}
+    <style>
+        .service-card {
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <!-- Services Hero Section -->
+        <section class="pt-32 pb-20 md:pt-40 md:pb-28 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <div>
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
+                        Modern Healthcare <span class="gradient-text">at Your Fingertips</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                        We offer a comprehensive suite of digital health services designed for convenience, accuracy, and peace of mind.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Innovative Technology Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Advanced Digital Health Tools</h2>
+                    <p class="text-gray-600 mt-2">Leveraging technology for smarter health insights.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Prediction Model Card -->
+                    <div class="bg-gray-800 text-white p-8 rounded-2xl shadow-2xl service-card flex flex-col" style="background: linear-gradient(135deg, #4a5568, #2d3748);">
+                        <div class="flex-grow">
+                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-white/10">
+                                <i class="fas fa-brain text-3xl text-cyan-300"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">AI Diagnosis Prediction</h3>
+                            <p class="text-gray-300 mb-6">Our advanced AI prediction model analyzes your symptoms to estimate potential conditions, helping you consult the right specialist.</p>
+                        </div>
+                        <!-- Yeh link 'prediction' page par le jayega -->
+                        <a href="{% url 'prediction' %}" class="block text-center w-full mt-4 border border-cyan-300 text-cyan-300 font-semibold py-3 px-6 rounded-lg hover:bg-cyan-300 hover:text-gray-800 transition-all duration-300">
+                            Analyze My Symptoms
+                        </a>
+                    </div>
+                    <!-- LLM Chatbot Card -->
+                    <div class="bg-blue-600 text-white p-8 rounded-2xl shadow-2xl service-card flex flex-col" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                        <div class="flex-grow">
+                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-white/10">
+                                <i class="fas fa-robot text-3xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Professional AI Health Assistant</h3>
+                            <p class="text-blue-100 mb-6">Get instant, professional answers to your medical questions from our Gemini-powered AI Assistant.</p>
+                        </div>
+                        <!-- Yeh link 'assistant' page par le jayega -->
+                        <a href="{% url 'assistant' %}" class="block text-center w-full mt-4 border border-white text-white font-semibold py-3 px-6 rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-300">
+                            Engage with AI Assistant
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Services Section -->
+        <section id="services" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Our Core Medical Services</h2>
+                    <p class="text-gray-600 mt-2">The foundation of your digital health journey.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Other service cards -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg service-card">
+                        <h3 class="text-2xl font-bold mb-3">General Consultation</h3>
+                        <p class="text-gray-600">Connect with experienced general physicians for your primary health concerns.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg service-card">
+                        <h3 class="text-2xl font-bold mb-3">Specialist Appointment</h3>
+                        <p class="text-gray-600">Book appointments with top specialists across various medical fields.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg service-card">
+                        <h3 class="text-2xl font-bold mb-3">Online Pharmacy</h3>
+                        <p class="text-gray-600">Get your prescriptions filled and delivered right to your doorstep.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

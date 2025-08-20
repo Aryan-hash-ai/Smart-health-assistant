@@ -1,0 +1,296 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}assistant{% endblock %}
+
+{% block styles %}
+    <style>
+       body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gradient-button {
+             background-image: linear-gradient(to right, #3b82f6, #2563eb);
+             transition: all 0.3s ease;
+        }
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .typing-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.5rem;
+            background-color: #3b82f6;
+            animation: blink 1s infinite;
+            margin-left: 4px;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <!-- AI Assistant Section -->
+        <section class="pt-32 pb-20 md:pt-40 md:pb-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-4xl mx-auto mb-12 fade-in-up">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+                        Professional <span class="gradient-text">AI Health Assistant</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mx-auto">
+                        Engage with our advanced AI for instant, reliable health information. Ask questions, understand reports, or explore health topics in a secure, conversational interface.
+                    </p>
+                </div>
+
+                <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start fade-in-up">
+                    <!-- Input Section -->
+                    <div class="bg-gray-50 p-8 rounded-2xl shadow-inner">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Your Query</h3>
+                        <form id="llm-form">
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="user-query" class="block text-sm font-semibold text-gray-700 mb-2">Primary Question*</label>
+                                    <textarea id="user-query" rows="4" class="w-full p-3 border border-gray-300 rounded-lg input-field" placeholder="e.g., Explain the results of my recent blood test."></textarea>
+                                    <div id="query-error" class="hidden text-red-500 text-sm mt-1">This field is required.</div>
+                                </div>
+                                <div>
+                                    <label for="user-context" class="block text-sm font-semibold text-gray-700 mb-2">Provide Context (Optional)</label>
+                                    <textarea id="user-context" rows="6" class="w-full p-3 border border-gray-300 rounded-lg input-field" placeholder="e.g., Paste your lab report details here...&#10;Hemoglobin: 14 g/dL&#10;Cholesterol: 190 mg/dL"></textarea>
+                                </div>
+                                <div class="grid sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="user-age" class="block text-sm font-semibold text-gray-700 mb-2">Age</label>
+                                        <input type="number" id="user-age" class="w-full p-3 border border-gray-300 rounded-lg input-field" placeholder="e.g., 35">
+                                    </div>
+                                    <div>
+                                        <label for="response-tone" class="block text-sm font-semibold text-gray-700 mb-2">Response Tone</label>
+                                        <select id="response-tone" class="w-full p-3 border border-gray-300 rounded-lg input-field bg-white">
+                                            <option value="Professional">Professional</option>
+                                            <option value="Simple">Simple & Clear</option>
+                                            <option value="Empathetic">Empathetic</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <button type="submit" class="w-full text-white font-bold py-4 px-12 rounded-full text-lg gradient-button">
+                                    <i class="fas fa-paper-plane mr-2"></i> ✨ Get AI Response
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Output Section -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl h-full flex flex-col">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">AI Assistant's Response</h3>
+                        <div id="response-container" class="flex-grow bg-gray-100 rounded-lg p-6 overflow-y-auto min-h-[300px]">
+                            <div id="initial-message" class="text-center text-gray-500 h-full flex flex-col justify-center items-center">
+                                <i class="fas fa-robot text-4xl mb-4"></i>
+                                <p>Your professional response will appear here.</p>
+                            </div>
+                            <div id="loader-container" class="hidden text-center h-full flex-col justify-center items-center">
+                                <div class="loader"></div>
+                                <p class="mt-4 text-lg font-semibold text-gray-600">Generating response...</p>
+                            </div>
+                            <div id="response-content" class="text-gray-700 leading-relaxed prose"></div>
+                        </div>
+                         <div class="text-center mt-6">
+                            <button id="reset-btn" class="hidden bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full hover:bg-gray-300 transition">
+                                <i class="fas fa-redo mr-2"></i> Ask Another Question
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example Usage Section -->
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 fade-in-up">Example Use Cases</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12 fade-in-up">
+                    Discover how our AI Health Assistant can help you in various scenarios.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 text-left">
+                    <div class="bg-white p-6 rounded-xl shadow-lg fade-in-up">
+                        <i class="fas fa-file-medical-alt text-3xl text-blue-500 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Understand Lab Reports</h3>
+                        <p>Paste your lab results and ask for a simple explanation of what each value means for your health.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg fade-in-up" style="animation-delay: 0.2s;">
+                        <i class="fas fa-pills text-3xl text-teal-500 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Medication Queries</h3>
+                        <p>Ask about potential side effects, drug interactions, or the best time to take your prescribed medication.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg fade-in-up" style="animation-delay: 0.4s;">
+                        <i class="fas fa-book-medical text-3xl text-indigo-500 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Explore Health Topics</h3>
+                        <p>Get clear, concise information on complex medical conditions, treatments, or wellness strategies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+         <!-- Disclaimer Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-6 rounded-lg text-center fade-in-up">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <h3 class="text-xl font-bold mb-2">For Informational Purposes Only</h3>
+                    <p>The AI Assistant provides information based on its training data and is not a substitute for a diagnosis from a qualified human medical professional. Always consult your doctor for medical advice.</p>
+                </div>
+            </div>
+        </section>
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }} {# This includes the scripts from the parent layout #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const llmForm = document.getElementById('llm-form');
+            const userQueryInput = document.getElementById('user-query');
+            const userContextInput = document.getElementById('user-context');
+            const userAgeInput = document.getElementById('user-age');
+            const responseToneSelect = document.getElementById('response-tone');
+            const queryError = document.getElementById('query-error');
+            const initialMessage = document.getElementById('initial-message');
+            const loaderContainer = document.getElementById('loader-container');
+            const responseContent = document.getElementById('response-content');
+            const resetBtn = document.getElementById('reset-btn');
+
+            llmForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (userQueryInput.value.trim() === '') {
+                    queryError.classList.remove('hidden');
+                    userQueryInput.focus();
+                    return;
+                }
+                queryError.classList.add('hidden');
+                
+                initialMessage.classList.add('hidden');
+                responseContent.innerHTML = '';
+                loaderContainer.style.display = 'flex';
+                resetBtn.classList.add('hidden');
+
+                try {
+                    const response = await getAiResponse();
+                    loaderContainer.style.display = 'none';
+                    typeResponse(response);
+                    resetBtn.classList.remove('hidden');
+                } catch (error) {
+                    loaderContainer.style.display = 'none';
+                    responseContent.innerHTML = `<p class="text-red-500">Sorry, something went wrong. Please try again later.</p>`;
+                    resetBtn.classList.remove('hidden');
+                }
+            });
+            
+            resetBtn.addEventListener('click', () => {
+                llmForm.reset();
+                responseContent.innerHTML = '';
+                resetBtn.classList.add('hidden');
+                initialMessage.classList.remove('hidden');
+            });
+
+            async function getAiResponse() {
+                // Construct the prompt
+                const tone = responseToneSelect.value;
+                const age = userAgeInput.value ? ` for a ${userAgeInput.value}-year-old` : '';
+                const context = userContextInput.value ? `\n\nHere is some context:\n${userContextInput.value}` : '';
+                
+                const prompt = `You are a professional AI health assistant. Provide a ${tone} response to the following query${age}:\n\nQuery: "${userQueryInput.value}"${context}\n\nProvide the response in HTML format with paragraphs, lists, and bold tags for structure. Do not include a final disclaimer, as it is already on the page.`;
+
+                // Gemini API call
+                const apiKey = ""; // API key will be handled by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    // Handle cases where the response structure is unexpected or content is missing
+                    throw new Error('Invalid response structure from API.');
+                }
+            }
+
+            function typeResponse(htmlContent) {
+                // Since the response is HTML, we can set it directly.
+                // The typing effect is complex with nested HTML.
+                // For a better user experience, we'll fade it in.
+                responseContent.innerHTML = htmlContent;
+                responseContent.style.opacity = '0';
+                setTimeout(() => {
+                    responseContent.style.transition = 'opacity 0.5s';
+                    responseContent.style.opacity = '1';
+                }, 100);
+            }
+
+            // Fade-in animations
+            const fadeInElements = document.querySelectorAll('.fade-in-up');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            fadeInElements.forEach(el => observer.observe(el));
+        });
+    </script>
+{% endblock scripts %}

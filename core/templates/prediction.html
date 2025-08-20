@@ -1,0 +1,273 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}AI Disease Predictor{% endblock %}
+
+{% block styles %}
+    <style>
+        /* Styles specific to the prediction page */
+        .symptom-btn {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .symptom-btn.selected {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #1d4ed8;
+            transform: scale(1.05);
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
+        #results-container {
+            transition: all 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #results-container.visible {
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    
+
+    <!-- Prediction Tool Section -->
+    <section class="pt-32 pb-20 md:pt-40 md:pb-28 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-4xl mx-auto">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+                        AI-Powered <span class="gradient-text">Disease Prediction</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mx-auto mb-10">
+                        Select your symptoms from the list below, and our advanced AI model will provide a preliminary analysis of potential health conditions.
+                    </p>
+                </div>
+
+                <!-- Symptom Selector -->
+                <div id="symptom-selector" class="bg-gray-50 p-8 rounded-2xl shadow-inner">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Select Your Symptoms</h3>
+                    <div id="symptoms-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <!-- Symptoms will be injected here by JS -->
+                    </div>
+                    <div id="no-symptoms-message" class="hidden text-red-500 mt-4 font-semibold">Please select at least one symptom.</div>
+                    <button id="get-prediction-btn" class="mt-8 w-full md:w-auto text-white font-bold py-4 px-12 rounded-full text-lg gradient-button">
+                        Get Prediction
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div id="results-wrapper" class="mt-12 text-left">
+                     <div id="loader-container" class="hidden flex-col items-center justify-center p-8">
+                        <div class="loader"></div>
+                        <p class="mt-4 text-lg font-semibold text-gray-600">Analyzing your symptoms...</p>
+                    </div>
+                    <div id="results-container" class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
+                        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Prediction Result</h2>
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <div class="mb-4">
+                                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Potential Condition</h4>
+                                    <p id="predicted-disease" class="text-2xl font-bold text-blue-600"></p>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Confidence Score</h4>
+                                    <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+                                        <div id="confidence-bar" class="bg-green-500 h-4 rounded-full transition-all duration-500"></div>
+                                    </div>
+                                    <p id="confidence-score" class="text-right font-bold mt-1"></p>
+                                </div>
+                            </div>
+                            <div id="suggestion-box" class="bg-blue-50 p-6 rounded-lg border-l-4">
+                                <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Suggestions</h4>
+                                <p id="suggestions" class="text-gray-700"></p>
+                            </div>
+                        </div>
+                         <div class="text-center mt-8">
+                            <button id="reset-btn" class="bg-gray-200 text-gray-800 font-semibold py-3 px-8 rounded-full hover:bg-gray-300 transition">Analyze Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How Our AI Works</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">
+                Our prediction model is built on a neural network trained with millions of anonymized medical cases.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 text-left">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <i class="fas fa-database text-3xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Data Input</h3>
+                    <p>You select your symptoms, which are converted into a data vector for the model.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <i class="fas fa-cogs text-3xl text-teal-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Pattern Recognition</h3>
+                    <p>The AI compares your symptom pattern against its vast database of medical cases.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <i class="fas fa-chart-line text-3xl text-indigo-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Probabilistic Output</h3>
+                    <p>The model outputs a list of potential conditions with a confidence score for each.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Disclaimer Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-6 rounded-lg text-center">
+                <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                <h3 class="text-xl font-bold mb-2">Important Disclaimer</h3>
+                <p>This prediction is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment.</p>
+            </div>
+        </div>
+    </section>
+    
+   
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }} {# This includes the scripts from the parent layout #}
+    <script>
+    // Your page-specific JavaScript goes here
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Elements ---
+        const symptomsGrid = document.getElementById('symptoms-grid');
+        const getPredictionBtn = document.getElementById('get-prediction-btn');
+        const resultsWrapper = document.getElementById('results-wrapper');
+        const resultsContainer = document.getElementById('results-container');
+        const loaderContainer = document.getElementById('loader-container');
+        const resetBtn = document.getElementById('reset-btn');
+        const noSymptomsMessage = document.getElementById('no-symptoms-message');
+
+        // --- Data ---
+        const symptomsList = [
+            'Fever', 'Cough', 'Headache', 'Fatigue', 'Sore Throat', 'Shortness of Breath',
+            'Muscle Pain', 'Joint Pain', 'Nausea', 'Vomiting', 'Diarrhea', 'Runny Nose',
+            'Skin Rash', 'Chills', 'Loss of Smell', 'Loss of Taste'
+        ];
+
+        let selectedSymptoms = [];
+
+        // --- Functions ---
+        function renderSymptoms() {
+            if (!symptomsGrid) return;
+            symptomsGrid.innerHTML = '';
+            symptomsList.forEach(symptom => {
+                const btn = document.createElement('button');
+                btn.className = 'symptom-btn bg-white text-gray-700 font-semibold py-3 px-2 rounded-lg shadow hover:shadow-md';
+                btn.textContent = symptom;
+                btn.dataset.symptom = symptom;
+                btn.addEventListener('click', toggleSymptom);
+                symptomsGrid.appendChild(btn);
+            });
+        }
+
+        function toggleSymptom(event) {
+            const btn = event.target;
+            const symptom = btn.dataset.symptom;
+            btn.classList.toggle('selected');
+            if (selectedSymptoms.includes(symptom)) {
+                selectedSymptoms = selectedSymptoms.filter(s => s !== symptom);
+            } else {
+                selectedSymptoms.push(symptom);
+            }
+            if(noSymptomsMessage) noSymptomsMessage.classList.add('hidden');
+        }
+
+        function getPrediction() {
+            if (selectedSymptoms.length === 0) {
+                if(noSymptomsMessage) noSymptomsMessage.classList.remove('hidden');
+                return;
+            }
+
+            if(loaderContainer) loaderContainer.style.display = 'flex';
+            if(resultsContainer) resultsContainer.classList.remove('visible');
+
+            // Simulate API call
+            setTimeout(() => {
+                const result = generateMockResult();
+                displayResult(result);
+                if(loaderContainer) loaderContainer.style.display = 'none';
+                if(resultsContainer) resultsContainer.classList.add('visible');
+                if(resultsWrapper) resultsWrapper.scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        }
+        
+        function generateMockResult() {
+            if (selectedSymptoms.includes('Fever') && selectedSymptoms.includes('Cough') && selectedSymptoms.includes('Fatigue')) {
+                return { disease: 'Potential Flu', score: 92, suggestion: 'Rest, stay hydrated, and monitor your temperature. Consult a doctor if symptoms worsen.', level: 'medium' };
+            }
+            if (selectedSymptoms.includes('Shortness of Breath') && selectedSymptoms.includes('Fever')) {
+                 return { disease: 'Potential Pneumonia', score: 95, suggestion: 'This could be serious. Please seek immediate medical attention.', level: 'high' };
+            }
+             if (selectedSymptoms.includes('Headache') && selectedSymptoms.includes('Nausea')) {
+                return { disease: 'Potential Migraine', score: 88, suggestion: 'Rest in a quiet, dark room. Over-the-counter pain relievers may help.', level: 'medium' };
+            }
+            if (selectedSymptoms.includes('Runny Nose') && selectedSymptoms.includes('Sore Throat')) {
+                 return { disease: 'Common Cold', score: 98, suggestion: 'Get plenty of rest and fluids. Symptoms are typically mild.', level: 'low' };
+            }
+            return { disease: 'General Viral Infection', score: 75, suggestion: 'Your symptoms are general. It is recommended to rest and monitor your condition.', level: 'low' };
+        }
+
+        function displayResult(result) {
+            document.getElementById('predicted-disease').textContent = result.disease;
+            document.getElementById('confidence-score').textContent = `${result.score}%`;
+            document.getElementById('suggestions').textContent = result.suggestion;
+            
+            const confidenceBar = document.getElementById('confidence-bar');
+            const suggestionBox = document.getElementById('suggestion-box');
+            
+            confidenceBar.style.width = `${result.score}%`;
+            
+            confidenceBar.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500');
+            suggestionBox.classList.remove('border-green-500', 'bg-green-50', 'border-yellow-500', 'bg-yellow-50', 'border-red-500', 'bg-red-50');
+
+            if (result.level === 'high') {
+                confidenceBar.classList.add('bg-red-500');
+                suggestionBox.classList.add('border-red-500', 'bg-red-50');
+            } else if (result.level === 'medium') {
+                confidenceBar.classList.add('bg-yellow-500');
+                 suggestionBox.classList.add('border-yellow-500', 'bg-yellow-50');
+            } else {
+                confidenceBar.classList.add('bg-green-500');
+                suggestionBox.classList.add('border-green-500', 'bg-green-50');
+            }
+        }
+
+        function resetTool() {
+            selectedSymptoms = [];
+            document.querySelectorAll('.symptom-btn.selected').forEach(btn => btn.classList.remove('selected'));
+            if(resultsContainer) resultsContainer.classList.remove('visible');
+            if(noSymptomsMessage) noSymptomsMessage.classList.add('hidden');
+        }
+
+        // --- Event Listeners ---
+        if(getPredictionBtn) getPredictionBtn.addEventListener('click', getPrediction);
+        if(resetBtn) resetBtn.addEventListener('click', resetTool);
+
+        // --- Initial Render ---
+        renderSymptoms();
+    });
+    </script>
+{% endblock scripts %}

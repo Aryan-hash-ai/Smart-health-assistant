@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HealthFast{% endblock %} - Your Trusted Partner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Correctly linking static CSS file -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Modern Navbar Styles */
+        .nav-link {
+            position: relative;
+            padding-bottom: 8px; /* More space for the underline */
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background-color: #2563eb;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 50%;
+        }
+        .nav-link.active {
+            color: #1d4ed8; /* Darker blue for active link */
+            font-weight: 600;
+        }
+        .gradient-button {
+             background-image: linear-gradient(to right, #3b82f6, #2563eb);
+             transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body class="text-gray-800 bg-gradient-to-br from-gray-50 to-white">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="{% url 'home' %}" class="flex items-center space-x-2">
+                    <!-- Modern Stethoscope Logo -->
+                    <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0" stroke="#2563eb" stroke-width="1.5"/>
+                        <path d="M15.5 3.5c1.333-1.333 3.167-1.333 4.5 0s1.333 3.167 0 4.5L14 14H8v-6l2.5-2.5c1.333-1.333 3.167-1.333 4.5 0z" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 14v5c0 1.105.895 2 2 2h0c1.105 0 2-.895 2-2v-5" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="text-2xl font-bold text-blue-600">HealthFast</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <!-- Using Django's url tag and added nav-link class -->
+                    <a href="{% url 'home' %}" class="nav-link text-gray-600 hover:text-blue-600">Home</a>
+                    <a href="{% url 'about' %}" class="nav-link text-gray-600 hover:text-blue-600">About Us</a>
+                    <a href="{% url 'services' %}" class="nav-link text-gray-600 hover:text-blue-600">Services</a>
+                    <a href="{% url 'contact' %}" class="nav-link text-gray-600 hover:text-blue-600">Contact</a>
+                </nav>
+                <button class="book-now-btn hidden md:block text-white px-6 py-2 rounded-full font-semibold cta-button gradient-button">
+                    Book Now
+                </button>
+                <button class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content block for child templates -->
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <!-- Booking Modal (available on all pages) -->
+    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div id="booking-form-container" class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Book an Appointment</h2>
+                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            </div>
+            <form id="booking-form">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                    <input type="email" id="email" name="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="phone" class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="service" class="block text-gray-700 font-semibold mb-2">Select Service</label>
+                    <select id="service" name="service" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">--Please choose an option--</option>
+                        <option value="general">General Consultation</option>
+                        <option value="specialist">Specialist Appointment</option>
+                        <option value="pharmacy">Online Pharmacy</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label for="date" class="block text-gray-700 font-semibold mb-2">Preferred Date</label>
+                    <input type="date" id="date" name="date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <button type="submit" class="w-full text-white px-8 py-3 rounded-full font-bold text-lg cta-button gradient-button">Submit Request</button>
+            </form>
+        </div>
+        <div id="success-message" class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4 text-center hidden">
+            <div class="text-green-500 mb-4">
+                <i class="fas fa-check-circle fa-3x"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Booking Successful!</h2>
+            <p class="text-gray-600">Thank you for your request. Our team will contact you shortly to confirm your appointment.</p>
+            <button id="close-success-btn" class="mt-6 text-white px-8 py-2 rounded-full font-semibold cta-button gradient-button">Close</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M15.5 3.5c1.333-1.333 3.167-1.333 4.5 0s1.333 3.167 0 4.5L14 14H8v-6l2.5-2.5c1.333-1.333 3.167-1.333 4.5 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 14v5c0 1.105.895 2 2 2h0c1.105 0 2-.895 2-2v-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span class="text-2xl font-bold">HealthFast</span>
+                    </div>
+                    <p class="text-gray-400">Your partner in digital healthcare.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'home' %}" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="{% url 'services' %}" class="text-gray-400 hover:text-white">Services</a></li>
+                        <li><a href="{% url 'about' %}" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500">
+                <p>&copy; 2025 HealthFast. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Correctly linking static JS file -->
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <!-- Block for page-specific scripts -->
+    {% block scripts %}
+    <script>
+    // This script handles the booking modal, which is part of the layout
+    document.addEventListener('DOMContentLoaded', function() {
+        // Active link highlighter
+        const navLinks = document.querySelectorAll('.nav-link');
+        // Get a more specific path for comparison
+        const currentPath = window.location.pathname;
+
+        navLinks.forEach(link => {
+            // Check if the link's href is part of the current path
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+
+        const bookingModal = document.getElementById('booking-modal');
+        const bookNowBtns = document.querySelectorAll('.book-now-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const bookingForm = document.getElementById('booking-form');
+        const bookingFormContainer = document.getElementById('booking-form-container');
+        const successMessage = document.getElementById('success-message');
+        const closeSuccessBtn = document.getElementById('close-success-btn');
+
+        const openModal = () => bookingModal.classList.remove('hidden');
+        const closeModal = () => {
+            bookingModal.classList.add('hidden');
+            setTimeout(() => {
+                if(bookingFormContainer) bookingFormContainer.classList.remove('hidden');
+                if(successMessage) successMessage.classList.add('hidden');
+                if(bookingForm) bookingForm.reset();
+            }, 300);
+        }
+
+        bookNowBtns.forEach(btn => btn.addEventListener('click', openModal));
+        if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        if(closeSuccessBtn) closeSuccessBtn.addEventListener('click', closeModal);
+
+        if(bookingModal) {
+            bookingModal.addEventListener('click', (e) => {
+                if (e.target === bookingModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        if(bookingForm) {
+            bookingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                bookingFormContainer.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+            });
+        }
+    });
+    </script>
+    {% endblock scripts %}
+</body>
+</html>

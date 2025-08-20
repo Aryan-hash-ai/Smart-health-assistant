@@ -1,0 +1,211 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}About Us{% endblock %}
+
+{% block styles %}
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gradient-button {
+             background-image: linear-gradient(to right, #3b82f6, #2563eb);
+             transition: all 0.3s ease;
+        }
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .team-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid #3b82f6;
+            z-index: 1;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <main>
+        <!-- About Us Hero Section -->
+        <section class="pt-40 pb-20 md:pt-48 md:pb-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="fade-in-up">
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+                            The Future of Healthcare, Driven by <span class="gradient-text">Passion and Innovation</span>
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-6">
+                            HealthFast was born from a simple yet powerful idea: healthcare should be accessible, intelligent, and deeply personal. We are a team of doctors, engineers, and innovators dedicated to revolutionizing the way you experience healthcare.
+                        </p>
+                        <a href="#our-workings" class="text-white font-bold py-3 px-8 rounded-full text-lg gradient-button">
+                            How It Works
+                        </a>
+                    </div>
+                    <div class="fade-in-up" style="animation-delay: 0.2s;">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba9996a?q=80&w=2070&auto=format&fit=crop" alt="Team of doctors collaborating" class="rounded-2xl shadow-xl">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Mission & Vision -->
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="fade-in-up">
+                        <i class="fas fa-bullseye text-4xl text-blue-500 mb-4"></i>
+                        <h2 class="text-3xl font-bold mb-4">Our Mission</h2>
+                        <p class="text-gray-600 text-lg">To make quality healthcare accessible, affordable, and convenient for everyone, everywhere, by leveraging cutting-edge technology and a network of compassionate medical experts.</p>
+                    </div>
+                    <div class="fade-in-up" style="animation-delay: 0.2s;">
+                        <i class="fas fa-eye text-4xl text-teal-500 mb-4"></i>
+                        <h2 class="text-3xl font-bold mb-4">Our Vision</h2>
+                        <p class="text-gray-600 text-lg">To be the world's most trusted digital health platform, empowering individuals with the knowledge and tools to take proactive control of their health and well-being.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 fade-in-up">See Our Vision in Action</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12 fade-in-up">
+                    A glimpse into how we are changing the landscape of digital healthcare.
+                </p>
+                <div class="relative rounded-2xl shadow-2xl overflow-hidden fade-in-up max-w-4xl mx-auto">
+                    <img src="https://placehold.co/1280x720/1a202c/ffffff?text=HealthFast+Project+Video" alt="Video placeholder" class="w-full">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <button class="w-24 h-24 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/50 transition-all duration-300">
+                            <i class="fas fa-play text-4xl ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How Our Platform Works -->
+        <section id="our-workings" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in-up">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">How Our Platform Works</h2>
+                    <p class="text-gray-600 mt-2">A seamless blend of human expertise and artificial intelligence.</p>
+                </div>
+                <div class="relative max-w-3xl mx-auto">
+                    <div class="border-l-2 border-blue-300 absolute h-full top-0 left-2"></div>
+                    <div class="space-y-12">
+                        <div class="relative pl-12 fade-in-up timeline-item">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-keyboard text-xl text-blue-600 mr-3"></i>
+                                <h3 class="text-xl font-bold">1. Symptom Input & AI Analysis</h3>
+                            </div>
+                            <p class="text-gray-600">You begin by entering your symptoms into our AI Prediction Model. The system analyzes this data against a vast medical database to identify potential conditions and their likelihood.</p>
+                        </div>
+                        <div class="relative pl-12 fade-in-up timeline-item">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-robot text-xl text-blue-600 mr-3"></i>
+                                <h3 class="text-xl font-bold">2. Engage with the AI Assistant</h3>
+                            </div>
+                            <p class="text-gray-600">Our Gemini-powered AI Health Assistant helps you understand the preliminary results. You can ask follow-up questions, get definitions for complex terms, and receive guidance on the next steps in a clear, conversational manner.</p>
+                        </div>
+                        <div class="relative pl-12 fade-in-up timeline-item">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-user-md text-xl text-blue-600 mr-3"></i>
+                                <h3 class="text-xl font-bold">3. Connect with a Specialist</h3>
+                            </div>
+                            <p class="text-gray-600">Based on the AI's analysis, our platform recommends the most appropriate specialist for your condition. You can book a secure video consultation directly through our system for a definitive diagnosis and treatment plan.</p>
+                        </div>
+                        <div class="relative pl-12 fade-in-up timeline-item">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-notes-medical text-xl text-blue-600 mr-3"></i>
+                                <h3 class="text-xl font-bold">4. Personalized Care & Follow-up</h3>
+                            </div>
+                            <p class="text-gray-600">Your consultation details, prescriptions, and care plan are securely stored in your personal dashboard. Our system provides follow-up reminders and makes it easy to reconnect with your doctor or the AI assistant.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Meet The Team -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in-up">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Meet Our Leaders</h2>
+                    <p class="text-gray-600 mt-2">The minds behind our mission.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center team-card bg-gray-50 p-8 rounded-2xl fade-in-up">
+                        <img src="https://placehold.co/128x128/EBF4FF/3B82F6?text=CEO" alt="CEO" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-md">
+                        <h3 class="text-xl font-bold">Dr. Anya Sharma</h3>
+                        <p class="text-blue-500 font-semibold mb-3">Founder & CEO</p>
+                        <p class="text-gray-600">A medical doctor with a passion for technology, Dr. Sharma leads our vision to merge clinical excellence with digital innovation.</p>
+                    </div>
+                    <div class="text-center team-card bg-gray-50 p-8 rounded-2xl fade-in-up" style="animation-delay: 0.2s;">
+                        <img src="https://placehold.co/128x128/EBF4FF/3B82F6?text=CTO" alt="CTO" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-md">
+                        <h3 class="text-xl font-bold">Rohan Gupta</h3>
+                        <p class="text-teal-500 font-semibold mb-3">Chief Technology Officer</p>
+                        <p class="text-gray-600">Rohan is the architect of our secure and scalable platform, ensuring a seamless and reliable user experience.</p>
+                    </div>
+                    <div class="text-center team-card bg-gray-50 p-8 rounded-2xl fade-in-up" style="animation-delay: 0.4s;">
+                        <img src="https://placehold.co/128x128/EBF4FF/3B82F6?text=CMO" alt="CMO" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-md">
+                        <h3 class="text-xl font-bold">Dr. Sameer Khan</h3>
+                        <p class="text-indigo-500 font-semibold mb-3">Chief Medical Officer</p>
+                        <p class="text-gray-600">With over 20 years of clinical experience, Dr. Khan oversees our medical standards and practitioner network.</p>
+                    </div>
+                </div>
+                 
+            </div>
+        </section>
+
+    </main>
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }} {# This includes the scripts from the parent layout #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fade-in animations
+            const fadeInElements = document.querySelectorAll('.fade-in-up');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            fadeInElements.forEach(el => observer.observe(el));
+        });
+    </script>
+{% endblock scripts %}
