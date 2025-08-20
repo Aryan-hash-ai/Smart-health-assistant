@@ -6,7 +6,7 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
-    startCommand: gunicorn diagnocare.wsgi:application
+    startCommand: gunicorn DiagnoCare.wsgi:application
 
 
     envVars:
