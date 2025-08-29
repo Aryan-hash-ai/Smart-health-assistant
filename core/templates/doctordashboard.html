@@ -1,0 +1,160 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+<style>
+    .card-3d {
+        transition: all 0.3s ease;
+        transform-style: preserve-3d;
+    }
+    .card-3d:hover {
+        transform: translateY(-10px) perspective(1000px) rotateX(4deg) scale(1.05);
+        box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row gap-8 py-8 mt-6 px-6" style="margin-top: 60px;">
+    <!-- Left Sidebar -->
+    <aside class="w-full md:w-64 bg-white p-6 rounded-2xl shadow-lg flex-shrink-0 h-fit">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Doctor's Menu</h2>
+        <nav class="space-y-3">
+            <a href="#" class="flex items-center p-3 bg-blue-500 text-white rounded-lg font-semibold">
+                <i class="fas fa-th-large mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-user-friends mr-3"></i>
+                <span>Patients</span>
+            </a>
+        
+            <a href="#" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-user-circle mr-3"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Right Content Area -->
+    <div class="flex-grow">
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            <div class="block p-6 rounded-2xl shadow-lg text-white card-3d bg-gradient-to-br from-blue-500 to-indigo-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold opacity-80">Total Patients</h3>
+                        <p class="text-4xl font-bold mt-2">25</p>
+                    </div>
+                    <i class="fas fa-users text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="block p-6 rounded-2xl shadow-lg text-white card-3d bg-gradient-to-br from-green-500 to-emerald-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold opacity-80">Patient Checked Up</h3>
+                        <p class="text-4xl font-bold mt-2">18</p>
+                    </div>
+                    <i class="fas fa-user-check text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="block p-6 rounded-2xl shadow-lg text-white card-3d bg-gradient-to-br from-yellow-500 to-amber-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold opacity-80">Patient Pending</h3>
+                        <p class="text-4xl font-bold mt-2">7</p>
+                    </div>
+                    <i class="fas fa-user-clock text-5xl opacity-30"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+            <div class="lg:col-span-3 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Patient Growth</h2>
+                    <div class="flex space-x-2" id="growth-filters">
+                        <button data-filter="day" class="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-200 rounded-lg hover:bg-blue-500 hover:text-white transition">Day</button>
+                        <button data-filter="week" class="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-lg">Week</button>
+                        <button data-filter="month" class="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-200 rounded-lg hover:bg-blue-500 hover:text-white transition">Month</button>
+                    </div>
+                </div>
+                <div class="relative h-72"><canvas id="patientGrowthChart"></canvas></div>
+            </div>
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Patient Engagement</h2>
+                <div class="relative h-72"><canvas id="patientEngagementChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Patient List Table -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Engaged Patients</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b bg-gray-50"><th class="py-3 px-4 font-semibold">Name</th><th class="py-3 px-4 font-semibold">Email</th><th class="py-3 px-4 font-semibold">Status</th><th class="py-3 px-4 font-semibold">Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b hover:bg-gray-50"><td class="py-3 px-4">Alice Johnson</td><td class="py-3 px-4">alice.j@example.com</td><td class="py-3 px-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Pending</span></td><td class="py-3 px-4"><a href="{% url 'doctor_chatroom' %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600">Open Chat</a></td></tr>
+                        <tr class="border-b hover:bg-gray-50"><td class="py-3 px-4">Bob Williams</td><td class="py-3 px-4">bob.w@example.com</td><td class="py-3 px-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Completed</span></td><td class="py-3 px-4"><a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600">Open Chat</a></td></tr>
+                        <tr class="border-b hover:bg-gray-50"><td class="py-3 px-4">Charlie Brown</td><td class="py-3 px-4">charlie.b@example.com</td><td class="py-3 px-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Pending</span></td><td class="py-3 px-4"><a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600">Open Chat</a></td></tr>
+                        <tr class="border-b hover:bg-gray-50"><td class="py-3 px-4">Diana Miller</td><td class="py-3 px-4">diana.m@example.com</td><td class="py-3 px-4"><span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Completed</span></td><td class="py-3 px-4"><a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600">Open Chat</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const engagementCtx = document.getElementById('patientEngagementChart').getContext('2d');
+        new Chart(engagementCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Satisfied / Checked Up', 'Pending'],
+                datasets: [{ data: [18, 7], backgroundColor: ['#22c55e', '#f59e0b'], borderColor: ['#ffffff'], borderWidth: 4, hoverOffset: 8 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { padding: 20, boxWidth: 15, font: { size: 14 } } } } }
+        });
+
+        const growthCtx = document.getElementById('patientGrowthChart').getContext('2d');
+        let patientGrowthChart;
+        const growthData = {
+            day: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], data: [2, 3, 1, 4, 2, 5, 3] },
+            week: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], data: [10, 15, 12, 18] },
+            month: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], data: [50, 65, 80, 75, 90, 110] }
+        };
+
+        function createGrowthChart(filter) {
+            if (patientGrowthChart) patientGrowthChart.destroy();
+            patientGrowthChart = new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: growthData[filter].labels,
+                    datasets: [{ label: 'New Patients', data: growthData[filter].data, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, pointBackgroundColor: '#3b82f6', pointBorderColor: '#ffffff', pointHoverRadius: 7, pointHoverBackgroundColor: '#3b82f6' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        const filterButtons = document.querySelectorAll('#growth-filters button');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-600');
+                });
+                button.classList.add('bg-blue-500', 'text-white');
+                button.classList.remove('bg-gray-200', 'text-gray-600');
+                createGrowthChart(button.dataset.filter);
+            });
+        });
+        createGrowthChart('week');
+    });
+</script>
+{% endblock scripts %}

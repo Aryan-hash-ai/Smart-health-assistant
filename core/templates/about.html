@@ -72,7 +72,7 @@
                         </a>
                     </div>
                     <div class="fade-in-up" style="animation-delay: 0.2s;">
-                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba9996a?q=80&w=2070&auto=format&fit=crop" alt="Team of doctors collaborating" class="rounded-2xl shadow-xl">
+                        <img src="{% static 'img/about.png' %}" alt="Team of doctors collaborating" class="rounded-2xl shadow-xl">
                     </div>
                 </div>
             </div>
@@ -97,22 +97,21 @@
         </section>
 
         <!-- Video Section -->
-        <section class="py-20 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 fade-in-up">See Our Vision in Action</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12 fade-in-up">
-                    A glimpse into how we are changing the landscape of digital healthcare.
-                </p>
-                <div class="relative rounded-2xl shadow-2xl overflow-hidden fade-in-up max-w-4xl mx-auto">
-                    <img src="https://placehold.co/1280x720/1a202c/ffffff?text=HealthFast+Project+Video" alt="Video placeholder" class="w-full">
-                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
-                        <button class="w-24 h-24 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/50 transition-all duration-300">
-                            <i class="fas fa-play text-4xl ml-2"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <div class="relative rounded-2xl shadow-2xl overflow-hidden fade-in-up max-w-4xl mx-auto">
+        <video id="aboutVideo" class="w-full rounded-2xl shadow-2xl">
+            <source src="{% static 'video/Video1.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Overlay with Play/Pause Button -->
+        <div id="playOverlay"
+             class="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer transition-all duration-300">
+            <button id="playPauseBtn"
+                    class="w-24 h-24 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/50 transition-all duration-300">
+                <i id="playIcon" class="fas fa-play text-4xl ml-2"></i>
+            </button>
+        </div>
+    </div>
 
         <!-- How Our Platform Works -->
         <section id="our-workings" class="py-20 bg-gray-50">
@@ -194,7 +193,37 @@
 {% block scripts %}
     {{ block.super }} {# This includes the scripts from the parent layout #}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+    const video = document.getElementById('aboutVideo');
+    const playOverlay = document.getElementById('playOverlay');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playIcon = document.getElementById('playIcon');
+
+    // Toggle play/pause when button is clicked
+    playPauseBtn.addEventListener('click', () => {
+        if (video.paused) {
+            video.play();
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
+            playOverlay.style.background = 'transparent';
+        } else {
+            video.pause();
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            playOverlay.style.background = 'rgba(0,0,0,0.4)';
+        }
+    });
+
+    // Update overlay when video plays
+    video.addEventListener('play', () => {
+        playOverlay.style.background = 'transparent';
+    });
+
+    // Update overlay when video pauses
+    video.addEventListener('pause', () => {
+        playOverlay.style.background = 'rgba(0,0,0,0.4)';
+    });
+}); document.addEventListener('DOMContentLoaded', function() {
             // Fade-in animations
             const fadeInElements = document.querySelectorAll('.fade-in-up');
             const observer = new IntersectionObserver((entries) => {

@@ -1,0 +1,115 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+<style>
+    /* Custom scrollbar for chat log */
+    #chat-log::-webkit-scrollbar {
+        width: 8px;
+    }
+    #chat-log::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    #chat-log::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 4px;
+    }
+    #chat-log::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row gap-8 py-8" style="margin-top: 60px;">
+    <!-- Left Sidebar (Same as Patient Dashboard) -->
+    <aside class="w-full md:w-64 bg-white p-6 rounded-2xl shadow-lg flex-shrink-0 h-fit">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Patient Menu</h2>
+        <nav class="space-y-3">
+            <a href="{% url 'patientdashboard' %}" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-user-circle mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-history mr-3"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-file-medical-alt mr-3"></i>
+                <span>Prescriptions</span>
+            </a>
+            <a href="#" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-folder-open mr-3"></i>
+                <span>Reports</span>
+            </a>
+             <a href="#" class="flex items-center p-3 bg-blue-500 text-white rounded-lg font-semibold">
+                <i class="fas fa-comment-dots mr-3"></i>
+                <span>Messages</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Right Content Area: Chat Room -->
+    <div class="flex-grow bg-white rounded-2xl shadow-lg flex flex-col" style="height: 75vh;">
+        <!-- Chat Header -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+            <div class="flex items-center">
+                <img class="w-12 h-12 rounded-full mr-4 border-2 border-blue-200" src="https://placehold.co/80x80/EBF5FF/3B82F6?text=Dr.+E" alt="Doctor Avatar">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">Dr. Emily Carter</h2>
+                    <p class="text-sm text-green-500 flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Online</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-500 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-phone-alt text-xl"></i>
+                </button>
+                <button class="text-gray-500 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-video text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Log -->
+        <div id="chat-log" class="flex-grow p-6 overflow-y-auto space-y-6">
+            <!-- Patient Message (Demo) -->
+            <div class="flex justify-end">
+                <div class="max-w-md px-4 py-3 rounded-2xl bg-blue-500 text-white">
+                    <p class="text-sm">Good morning, Doctor. I've been experiencing a slight headache since yesterday.</p>
+                    <p class="text-xs text-right text-blue-100 mt-1">10:30 AM</p>
+                </div>
+            </div>
+            <!-- Doctor Message (Demo) -->
+            <div class="flex justify-start">
+                <div class="max-w-md px-4 py-3 rounded-2xl bg-gray-200 text-gray-800">
+                    <p class="text-sm">Good morning. Thank you for reaching out. Can you describe the headache for me?</p>
+                    <p class="text-xs text-right text-gray-500 mt-1">10:31 AM</p>
+                </div>
+            </div>
+             <!-- Patient Message (Demo) -->
+            <div class="flex justify-end">
+                <div class="max-w-md px-4 py-3 rounded-2xl bg-blue-500 text-white">
+                    <p class="text-sm">It's a dull ache, mostly around my temples. No other symptoms.</p>
+                    <p class="text-xs text-right text-blue-100 mt-1">10:32 AM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Input -->
+        <div class="bg-gray-100 p-4 border-t border-gray-200 flex items-center space-x-3">
+            <input id="chat-message-input" type="text" class="flex-grow border rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your message...">
+            <button class="p-3 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors">
+                <i class="fas fa-paperclip text-xl text-gray-600"></i>
+            </button>
+            <button id="chat-message-submit" class="text-white px-6 py-3 rounded-full font-semibold cta-button gradient-button">
+                Send
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    // Placeholder for chat functionality
+</script>
+{% endblock scripts %}
